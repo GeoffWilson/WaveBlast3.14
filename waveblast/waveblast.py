@@ -7,8 +7,9 @@ template.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.starting_template
 """
-import arcade
 import random
+
+import arcade
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
@@ -73,7 +74,7 @@ class MyGame(arcade.Window):
         self.control = Control()
 
         # Create your sprites and sprite lists here
-        self.ship = arcade.Sprite('/home/benshiro/PycharmProjects/WaveBlast3.14/sprites/ship.png')
+        self.ship = arcade.Sprite('./sprites/ship.png')
         self.ship.center_x = 100
         self.ship.center_y = SCREEN_HEIGHT / 2
 
@@ -83,7 +84,7 @@ class MyGame(arcade.Window):
         self.friendlies = arcade.SpriteList()
 
         for _ in range(0, 100):
-            star = Star('/home/benshiro/PycharmProjects/WaveBlast3.14/sprites/star.png')
+            star = Star('./sprites/star.png')
             star.center_x = random.randint(0, 1920)
             star.center_y = random.randint(0, 1080)
             self.stars.append(star)
@@ -201,7 +202,7 @@ class MyGame(arcade.Window):
 
     def create_shot(self):
         shot = Shot(
-            filename='/home/benshiro/PycharmProjects/WaveBlast3.14/sprites/shot.png',
+            filename='./sprites/shot.png',
             center_x=self.ship.right,
             center_y=self.ship.center_y - 3
         )
