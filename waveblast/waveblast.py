@@ -1,13 +1,9 @@
 """
-Starting Template
+WaveBlast 3.14 base code
 
-Once you have learned how to use classes, you can begin your program with this
-template.
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.starting_template
 """
 import random
+from typing import Optional
 
 import arcade
 
@@ -17,13 +13,26 @@ SCREEN_TITLE = "Pyglet Blast"
 
 
 class Control(object):
+    """
+    Main game control class
+    """
+
     def __init__(self):
         self.lives = 3
         self.score = 0
         self.space_delta = 0
 
+    def update(self):
+        """
+        updates the state of the game, doesn't do anything for now
+        """
+        pass
+
 
 class Star(arcade.Sprite):
+    """
+    Class to represent a background star
+    """
 
     def update(self):
         self.center_x -= 25
@@ -33,6 +42,9 @@ class Star(arcade.Sprite):
 
 
 class Shot(arcade.Sprite):
+    """
+    Class to represent a fired shot
+    """
 
     def update(self):
         self.center_x += 5
@@ -50,28 +62,33 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+        super().__init__(width, height, title, antialiasing=True)
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.control = None
-        self.ship = None
-        self.stars = None
-        self.hostiles = None
-        self.shots = None
-        self.friendlies = None
+        # Game control object
+        self.control: Control = Control()
 
-        self.up_pressed = False
-        self.down_pressed = False
-        self.left_pressed = False
-        self.right_pressed = False
-        self.space_pressed = False
+        # Your ship
+        self.ship: Optional[arcade.sprite_list.Sprite] = None
+
+        # Sprite lists
+        self.stars: Optional[arcade.sprite_list.SpriteList] = None
+        self.hostiles: Optional[arcade.sprite_list.SpriteList] = None
+        self.shots: Optional[arcade.sprite_list.SpriteList] = None
+        self.friendlies: Optional[arcade.sprite_list.SpriteList] = None
+
+        # Key event handler variables
+        self.up_pressed: bool = False
+        self.down_pressed: bool = False
+        self.left_pressed: bool = False
+        self.right_pressed: bool = False
+        self.space_pressed: bool = False
+
         # If you have sprite lists, you should create them here,
         # and set them to None
 
     def setup(self):
-
-        self.control = Control()
 
         # Create your sprites and sprite lists here
         self.ship = arcade.Sprite('./sprites/ship.png')
@@ -109,8 +126,8 @@ class MyGame(arcade.Window):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
-        self.ship.change_y = 0
         self.ship.change_x = 0
+        self.ship.change_y = 0
 
         if self.up_pressed and not self.down_pressed:
             if self.ship.top < SCREEN_HEIGHT:
@@ -128,11 +145,12 @@ class MyGame(arcade.Window):
 
         if self.space_pressed:
             if self.control.space_delta > 0.16:
-                self.create_shot()
+                self._create_shot()
                 self.control.space_delta = 0
             else:
                 self.control.space_delta += delta_time
 
+        # Update everything
         self.ship.update()
         self.stars.update()
         self.shots.update()
@@ -158,8 +176,9 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.SPACE:
             self.space_pressed = True
-            self.create_shot()
+            self._create_shot()
 
+        # Quit the game
         if key == arcade.key.ESCAPE:
             exit(0)
 
@@ -182,25 +201,11 @@ class MyGame(arcade.Window):
         if key == arcade.key.SPACE:
             self.space_pressed = False
 
-    def on_mouse_motion(self, x, y, delta_x, delta_y):
+    def _create_shot(self):
         """
-        Called whenever the mouse moves.
+        Creates a new shot at the current ship location
+        :return:
         """
-        pass
-
-    def on_mouse_press(self, x, y, button, key_modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-        pass
-
-    def on_mouse_release(self, x, y, button, key_modifiers):
-        """
-        Called when a user releases a mouse button.
-        """
-        pass
-
-    def create_shot(self):
         shot = Shot(
             filename='./sprites/shot.png',
             center_x=self.ship.right,
